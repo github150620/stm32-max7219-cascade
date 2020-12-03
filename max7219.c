@@ -15,8 +15,22 @@
 #define ADDR_SHUTDOWN    12
 #define ADDR_DISPLAYTEST 15
 
+static u8 font5x7[12][5] = {
+  {0x3e,0x41,0x41,0x41,0x3e}, // 0
+  {0x00,0x21,0x7f,0x01,0x00}, // 1
+  {0x21,0x43,0x45,0x49,0x31}, // 2
+  {0x22,0x41,0x49,0x49,0x36}, // 3
+  {0x0c,0x14,0x24,0x7f,0x04}, // 4
+  {0x72,0x51,0x51,0x51,0x4e}, // 5
+  {0x3e,0x49,0x49,0x49,0x06}, // 6
+  {0x40,0x47,0x48,0x50,0x60}, // 7
+  {0x36,0x49,0x49,0x49,0x36}, // 8
+  {0x30,0x49,0x49,0x49,0x3e}, // 9
+  {0x00,0x00,0x14,0x00,0x00}, // :
+  {0x00,0x00,0x00,0x00,0x00}, // space
+};
 
-u8 MAX7219_Buffer[4][8] = {
+static u8 MAX7219_Buffer[4][8] = {
 	{0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0},
@@ -31,7 +45,7 @@ static void delay(int i) {
 
 void SPI2_Init() {
  	GPIO_InitTypeDef GPIO_InitStructure;
-  SPI_InitTypeDef  SPI_InitStructure;
+	SPI_InitTypeDef  SPI_InitStructure;
  
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
@@ -85,6 +99,9 @@ void MAX7219_Init() {
 void MAX7219_SetBuffer(u8 addr, u8 value) {
 	u8 i;
 	u8 x10,x1;
+
+	if (addr>31) return;
+
 	x10 = addr / 8;
 	x1 = addr % 8;
 	for (i=0;i<8;i++) {
@@ -107,4 +124,24 @@ void MAX7219_Flush() {
 		delay(200); // Must delay.
 		GPIO_SetBits(GPIOB,GPIO_Pin_12);
 	}
+}
+
+void MAX7219_Print(char *s) {
+	u8 i, j;
+	for (i=0;i<7;i++){
+		if (*s == '\0') break;
+		for (j=0;j<5;j++) {
+			switch (s[i]) {
+			case ':':
+				MAX7219_SetBuffer(i*5+j, font5x7[10][j]);
+				break;
+			case ' ':
+				MAX7219_SetBuffer(i*5+j, font5x7[11][j]);
+				break;			
+			default:
+				MAX7219_SetBuffer(i*5+j, font5x7[s[i]-'0'][j]);
+			}
+		}
+	}
+	MAX7219_Flush();
 }
