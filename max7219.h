@@ -1,19 +1,25 @@
 /*
 
-Buffer:
+1.Connection:
+  PB12(SPI2_NSS)  -> MAX7219 CS
+  PB13(SPI2_SCK)  -> MAX7219 CLK
+  PB14(SPI2_MISO) -> N/A
+  PB15(SPI2_MOSI) -> MAX7219 DIN
 
- Addr   0   2   4   6    8   10  12  14   16  18  20  22   24  26  28  30
-          1   3   5   7    9   11  13  15   17  19  21  23   25  27  29  31
-      +--------------------------------------------------------------------+
-MSB 7 | O O O O O O O O  O O O O O O O O  O O O O O O O O  O O O O O O O O |
-    6 | O O O O O O O O  O O O O O O O O  O O O O O O O O  O O O O O O O O |
-    5 | O O O O O O O O  O O O O O O O O  O O O O O O O O  O O O O O O O O |
-    4 | O O O O O O O O  O O O O O O O O  O O O O O O O O  O O O O O O O O |
-    3 | O O O O O O O O  O O O O O O O O  O O O O O O O O  O O O O O O O O |
-    2 | O O O O O O O O  O O O O O O O O  O O O O O O O O  O O O O O O O O |
-    1 | O O O O O O O O  O O O O O O O O  O O O O O O O O  O O O O O O O O |
-LSB 0 | O O O O O O O O  O O O O O O O O  O O O O O O O O  O O O O O O O O |
-      +--------------------------------------------------------------------+
+
+2.Buffer
+                              11  13  15  17  19  21  23  25  27  29  31
+ Addr   0 1 2 3 4 5 6 7 8 9 10  12  14  16  18  20  22  24  26  28  30
+      +-----------------------------------------------------------------+
+MSB 7 | . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . |
+    6 | . @ @ @ . . . . @ . . . . @ @ @ . . . @ @ @ . . . . . @ . . . . |
+    5 | @ . . . @ . . @ @ . . . @ . . . @ . @ . . . @ . . . @ @ . . . . |
+    4 | @ . . . @ . . . @ . . . . . . @ . . . . . . @ . . @ . @ . . . . |
+    3 | @ . . . @ . . . @ . . . . . @ . . . . . @ @ . . @ . . @ . . . . |
+    2 | @ . . . @ . . . @ . . . . @ . . . . . . . . @ . @ @ @ @ @ . . . |
+    1 | @ . . . @ . . . @ . . . @ . . . . . @ . . . @ . . . . @ . . . . |
+LSB 0 | . @ @ @ . . . @ @ @ . . @ @ @ @ @ . . @ @ @ . . . . . @ . . . . |
+      +-----------------------------------------------------------------+
 */
 #ifndef _MAX7219_H
 #define _MAX7219_H
